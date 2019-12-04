@@ -675,10 +675,35 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.googleplay,
 		C3.Behaviors.Fade,
 		C3.Plugins.TextBox,
+		C3.Plugins.Keyboard.Cnds.OnKey,
+		C3.Behaviors.Fade.Acts.SetFadeInTime,
+		C3.Behaviors.Fade.Acts.StartFade,
+		C3.Behaviors.Fade.Cnds.OnFadeInEnd,
+		C3.Plugins.System.Acts.GoToLayout,
 		C3.Plugins.System.Cnds.IsGroupActive,
+		C3.Plugins.System.Cnds.OnLayoutStart,
+		C3.Plugins.LocalStorage.Acts.CheckItemExists,
+		C3.Plugins.LocalStorage.Acts.GetItem,
+		C3.Plugins.Text.Acts.SetText,
+		C3.Plugins.LocalStorage.Cnds.OnItemMissing,
+		C3.Plugins.LocalStorage.Acts.SetItem,
+		C3.Plugins.LocalStorage.Cnds.OnItemExists,
+		C3.Plugins.System.Acts.SetVar,
+		C3.Plugins.LocalStorage.Exps.ItemValue,
+		C3.Plugins.System.Cnds.CompareVar,
+		C3.Plugins.TextBox.Acts.SetEnabled,
+		C3.Plugins.TextBox.Acts.SetVisible,
+		C3.Plugins.TextBox.Acts.SetFocus,
+		C3.Plugins.Button.Acts.SetVisible,
+		C3.Plugins.Button.Acts.SetEnabled,
+		C3.Plugins.Sprite.Acts.SetInstanceVar,
+		C3.Plugins.System.Acts.ResetPersisted,
+		C3.Plugins.Button.Cnds.OnClicked,
+		C3.Plugins.Keyboard.Cnds.IsKeyDown,
+		C3.Plugins.TextBox.Exps.Text,
+		C3.Plugins.Button.Acts.Destroy,
 		C3.Plugins.DrawingCanvas.Acts.ClearCanvas,
 		C3.Plugins.System.Exps.rgba,
-		C3.Plugins.System.Acts.SetVar,
 		C3.Plugins.Sprite.Exps.X,
 		C3.Plugins.Sprite.Exps.Y,
 		C3.Plugins.Text.Acts.SetPos,
@@ -692,13 +717,9 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.DrawingCanvas.Acts.PasteObject,
 		C3.Plugins.DrawingCanvas.Acts.SetPos,
 		C3.Plugins.System.Acts.Scroll,
-		C3.Plugins.System.Cnds.OnLayoutStart,
 		C3.Plugins.System.Acts.ResetGlobals,
-		C3.Plugins.System.Acts.ResetPersisted,
 		C3.Behaviors.Fade.Acts.SetFadeOutTime,
-		C3.Behaviors.Fade.Acts.StartFade,
 		C3.Plugins.Sprite.Acts.SetAnim,
-		C3.Plugins.Text.Acts.SetText,
 		C3.Behaviors.Fade.Cnds.OnFadeOutEnd,
 		C3.Behaviors.Pin.Acts.Pin,
 		C3.Plugins.Text.Acts.SetVisible,
@@ -723,11 +744,8 @@ self.C3_GetObjectRefTable = function () {
 		C3.Behaviors.Timer.Cnds.OnTimer,
 		C3.Plugins.System.Acts.ToggleBoolVar,
 		C3.Plugins.Sprite.Acts.RotateClockwise,
-		C3.Plugins.Sprite.Acts.SetInstanceVar,
 		C3.Plugins.System.Exps.choose,
-		C3.Plugins.Keyboard.Cnds.OnKey,
 		C3.Behaviors.Platform.Acts.SetDefaultControls,
-		C3.Plugins.Keyboard.Cnds.IsKeyDown,
 		C3.Behaviors.Platform.Acts.SimulateControl,
 		C3.Plugins.System.Cnds.Else,
 		C3.Plugins.Sprite.Acts.Spawn,
@@ -740,26 +758,7 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.System.Acts.AddVar,
 		C3.Plugins.Sprite.Cnds.CompareInstanceVar,
 		C3.Plugins.Audio.Acts.StopAll,
-		C3.Plugins.System.Acts.GoToLayout,
-		C3.Behaviors.Timer.Acts.StopTimer,
-		C3.Behaviors.Fade.Acts.SetFadeInTime,
-		C3.Behaviors.Fade.Cnds.OnFadeInEnd,
-		C3.Plugins.LocalStorage.Acts.CheckItemExists,
-		C3.Plugins.LocalStorage.Acts.GetItem,
-		C3.Plugins.LocalStorage.Cnds.OnItemMissing,
-		C3.Plugins.LocalStorage.Acts.SetItem,
-		C3.Plugins.LocalStorage.Cnds.OnItemExists,
-		C3.Plugins.LocalStorage.Exps.ItemValue,
-		C3.Plugins.System.Cnds.CompareVar,
-		C3.Plugins.TextBox.Acts.SetEnabled,
-		C3.Plugins.TextBox.Acts.SetVisible,
-		C3.Plugins.TextBox.Acts.SetFocus,
-		C3.Plugins.Button.Acts.SetVisible,
-		C3.Plugins.Button.Acts.SetEnabled,
-		C3.Plugins.Button.Cnds.OnClicked,
-		C3.Plugins.TextBox.Exps.Text,
-		C3.Plugins.TextBox.Acts.Destroy,
-		C3.Plugins.Button.Acts.Destroy
+		C3.Behaviors.Timer.Acts.StopTimer
 	];
 };
 self.C3_JsPropNameTable = [
@@ -815,6 +814,7 @@ self.C3_JsPropNameTable = [
 	{Namebox: 0},
 	{Hiscore_Title: 0},
 	{reset: 0},
+	{Hiscore: 0},
 	{dX: 0},
 	{dY: 0},
 	{rotate1: 0},
@@ -822,8 +822,7 @@ self.C3_JsPropNameTable = [
 	{reverse: 0},
 	{rotate2: 0},
 	{move2: 0},
-	{KonstantaLevel: 0},
-	{Hiscore: 0}
+	{KonstantaLevel: 0}
 ];
 
 "use strict";
@@ -922,6 +921,33 @@ self.C3_JsPropNameTable = [
 	}
 
 	self.C3_ExpressionFuncs = [
+		() => 0.5,
+		() => "High Score",
+		() => "HiScore",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => and("Your Score:", v0.GetValue());
+		},
+		() => 0,
+		() => "name",
+		() => "N/A",
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			return () => f0();
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => and("High Score: ", v0.GetValue());
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => v0.GetValue();
+		},
+		() => 3,
+		p => {
+			const n0 = p._GetNode(0);
+			return () => n0.ExpObject();
+		},
 		() => "Split Screen",
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
@@ -961,10 +987,6 @@ self.C3_JsPropNameTable = [
 		},
 		p => {
 			const n0 = p._GetNode(0);
-			return () => n0.ExpObject();
-		},
-		p => {
-			const n0 = p._GetNode(0);
 			const f1 = p._GetNode(1).GetBoundMethod();
 			return () => (n0.ExpObject() + (f1("canvas") / 4));
 		},
@@ -978,7 +1000,6 @@ self.C3_JsPropNameTable = [
 		() => "Ready...",
 		() => 1.5,
 		() => "GO!",
-		() => 0,
 		() => "",
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
@@ -986,7 +1007,6 @@ self.C3_JsPropNameTable = [
 		},
 		() => "rotate2",
 		() => "rotate1",
-		() => 3,
 		() => "launch1",
 		() => "launch2",
 		() => "score",
@@ -1001,10 +1021,6 @@ self.C3_JsPropNameTable = [
 			return () => and("Life:", n0.ExpInstVar());
 		},
 		() => "BG Movement",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => v0.GetValue();
-		},
 		() => "BG Rotation",
 		p => {
 			const n0 = p._GetNode(0);
@@ -1041,24 +1057,7 @@ self.C3_JsPropNameTable = [
 		() => "invi2",
 		() => 100,
 		() => 30,
-		() => "Game Over",
-		() => 0.5,
-		() => "High Score",
-		() => "HiScore",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => and("Your Score:", v0.GetValue());
-		},
-		() => "name",
-		() => "N/A",
-		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			return () => f0();
-		},
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => and("High Score: ", v0.GetValue());
-		}
+		() => "Game Over"
 	];
 }
 
