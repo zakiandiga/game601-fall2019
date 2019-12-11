@@ -1,7 +1,7 @@
 {
 	"name": "brain-splitter",
 	"short_name": "brain-splitter",
-	"description": "",
+	"description": "Two game with one control",
 	"start_url": "index.html",
 	"display": "fullscreen",
 	"orientation": "landscape",
